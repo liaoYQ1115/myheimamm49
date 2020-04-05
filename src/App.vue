@@ -1,6 +1,5 @@
 <template>
   <div id="app">
-    <router-link to="/">跳转</router-link>
     <router-view></router-view>
   </div>
 </template>
@@ -9,6 +8,7 @@
  
 </script>
     
-<style>
-
+<style lang="less">
+ 
+@import url(~@/style/base.css);
 </style>

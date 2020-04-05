@@ -1,0 +1,60 @@
+body,
+div,
+span,
+p,
+ul,
+li,
+a,
+img,
+input,
+h1,
+h2,
+h3,
+h4,
+i {
+    margin: 0;
+    padding:0;
+    box-sizing:border-box;
+}
+.w {
+    margin:0 auto;
+}
+em,
+i {
+    font-style: normal;
+}
+
+li {
+    list-style: none;
+}
+input,
+button{
+   border:none;
+   outline:none;
+}
+img {
+    border: 0;
+    vertical-align: middle;
+}
+a {
+/*也可以设置一个链接文字颜色+a:hover*/
+    text-decoration: none;
+color:#000;
+}
+body {
+	font-size: 12px;
+	line-height: 1;
+	background-color: #ccc;
+}
+/* 清除浮动 */
+.clearfix:after {
+    visibility: hidden;
+    clear: both;
+    display: block;
+    content: ".";
+    height: 0
+}
+
+.clearfix {
+    *zoom: 1
+}
