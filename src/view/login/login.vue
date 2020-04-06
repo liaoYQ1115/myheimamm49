@@ -38,7 +38,7 @@
         <!-- type值决定按钮颜色 -->
         <el-button class="btn" type="primary" @click="clicklogin">登录</el-button>
         <br/>
-        <el-button class="btn" type="primary">注册</el-button>
+        <el-button class="btn" type="primary" @click="registerClick">注册</el-button>
       </el-form-item>
   </el-form>
 
@@ -46,11 +46,17 @@
     <div class="right">
       <img src="@/assets/img/login_banner_ele.png" alt />
     </div>
+
+    <register ref="register"></register>
   </div>
 </template>
 
 <script>
+import register from './register.vue' //导入注册弹窗
 export default {
+  components:{
+    register, //注册页面
+  },
   data(){
     return {
       form:{
@@ -73,6 +79,7 @@ export default {
     }
   },
   methods: {
+    //登录点击
     clicklogin(){
         //提交表单验证  返回值(布尔值),符合规则就是true
         //这里的$refs和上面定义的ref的值要一致
@@ -83,6 +90,10 @@ export default {
             this.$message.warning('输入错误,请重新输入')
           }
         });
+    },
+    //注册点击
+    registerClick(){
+        this.$refs.register.dialogFormVisible=true;
     }
   },
 };
