@@ -58,3 +58,7 @@ body {
 .clearfix {
     *zoom: 1
 }
+
+html,body,#app{
+    height: 100%;
+}
