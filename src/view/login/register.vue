@@ -42,7 +42,17 @@
                    <el-input v-model="form.code"></el-input>
               </el-col>
               <el-col :span="7" :offset="1">
-                  <img src="@/assets/img/key.jpg" alt class="code"/>
+                  <img :src="codeUrl" alt class="code" @click="changeCodeUrl"/>
+              </el-col>
+          </el-row>
+      </el-form-item>
+       <el-form-item label="验证码" prop="rcode">
+          <el-row>
+              <el-col :span="16">
+                   <el-input v-model="form.rcode"></el-input>
+              </el-col>
+              <el-col :span="7" :offset="1">
+                  <el-button @click="getRecode">获取用户验证码</el-button>
               </el-col>
           </el-row>
       </el-form-item>
@@ -62,6 +72,8 @@ export default {
       dialogFormVisible: false,
       baseUrl: process.env.VUE_APP_URL,
       imageUrl: "", //头像图片
+      codeUrl:process.env.VUE_APP_URL+'/captcha?type=sendsms', //图形码地址
+
        //   表单数据
       form: {
         avatar:'', //头像地址
@@ -70,6 +82,7 @@ export default {
         phone:'', //手机
         password:'',//密码
         code:'',//图形码
+        rcode:'',//手机验证码
       },
       rules:{ //表单验证规则绑定
         avatar:[{required:true,message:'请上传头像',trigger:'change'}],
@@ -108,6 +121,10 @@ export default {
             {required:true,message:'请输入图形码',trigger:'change'},
             {min:4,max:4,message:'请输入4位数图形码',trigger:'change'}
         ],
+        rcode:[
+            {required:true,message:'请输入短信验证码',trigger:'change'},
+            {min:6,max:6,message:'请输入6位数的短信验证码',trigger:'change'}
+        ],
       }
     };
   },
@@ -141,6 +158,25 @@ export default {
         this.$refs.form.validate((valid) => { //全局验证
             console.log(valid);
         })
+    },
+    //刷新图形码 拼接随机数
+    changeCodeUrl(){
+        this.codeUrl=process.env.VUE_APP_URL+'/captcha?type=sendsms&x='+Date.now();
+    },
+    //点击获取短信验证码
+    getRecode(){
+        let _pass=true;
+        this.$refs.form.validateField(['code','phone'],error=>{
+            if(error != ''){
+                _pass = false;
+            }
+        });
+
+        if(_pass === false){
+            return;
+        }else{
+            console.log(_pass);
+        }
     }
   }
 };
