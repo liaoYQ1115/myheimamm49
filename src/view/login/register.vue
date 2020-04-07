@@ -66,6 +66,7 @@
 </template>
 
 <script>
+import getPhoneCode from '@/api/register.js'
 export default {
   data() {
     return {
@@ -176,6 +177,12 @@ export default {
             return;
         }else{
             console.log(_pass);
+            //发送请求 获取短信验证码
+            getPhoneCode({code:this.form.code,phone:this.form.phone}).then(res=>{
+            //成功回调
+            this.$message.success(res.data.data.captcha+'');
+            console.log(res)
+    });
         }
     }
   }
