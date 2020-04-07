@@ -5,7 +5,7 @@
         <img src="@/assets/img/loginlogo.png" alt />
         <span class="titleName">黑马面面</span>
         <span class="titleLine">|</span>
-        <span class="titleName">用户登录</span>
+        <span class="titleName2">用户登录</span>
       </div>
   <!-- 表单 -->
            <!-- 挂载到data  单个表单验证的规则   整个表单提交的验证-->
@@ -90,6 +90,7 @@ export default {
             this.$message.warning('输入错误,请重新输入')
           }
         });
+        // alert(process.env.VUE_APP_zz);测试环境变量
     },
     //注册点击
     registerClick(){
