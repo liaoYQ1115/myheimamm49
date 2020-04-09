@@ -52,21 +52,21 @@
                    <el-input v-model="form.rcode"></el-input>
               </el-col>
               <el-col :span="7" :offset="1">
-                  <el-button @click="getRecode">获取用户验证码</el-button>
+                  <el-button @click="getRecode" :disabled="totalTime!=60">获取用户验证码<span :disabled="totalTime!=60">{{totalTime}}</span></el-button>
               </el-col>
           </el-row>
       </el-form-item>
     </el-form>
 
        <div solt="footer" class="footer">
-           <el-button>取消</el-button>
+           <el-button @click="dialogFormVisible = false">取消</el-button>
            <el-button type="primary" @click="submitClick">确定</el-button>
            </div> 
   </el-dialog>
 </template>
 
 <script>
-import getPhoneCode from '@/api/register.js'
+import {getPhoneCode,register} from '@/api/register.js'
 export default {
   data() {
     return {
@@ -74,7 +74,7 @@ export default {
       baseUrl: process.env.VUE_APP_URL,
       imageUrl: "", //头像图片
       codeUrl:process.env.VUE_APP_URL+'/captcha?type=sendsms', //图形码地址
-
+      totalTime:60,
        //   表单数据
       form: {
         avatar:'', //头像地址
@@ -124,7 +124,7 @@ export default {
         ],
         rcode:[
             {required:true,message:'请输入短信验证码',trigger:'change'},
-            {min:6,max:6,message:'请输入6位数的短信验证码',trigger:'change'}
+            {min:4,max:4,message:'请输入4位数的短信验证码',trigger:'change'}
         ],
       }
     };
@@ -154,10 +154,21 @@ export default {
 
     this.$refs.form.validateField('avatar');  //头像文件局部验证
     },
-    // 确认按钮点击事件
+    // 确认按钮点击事件 1.校验 2.提交注册
     submitClick(){
-        this.$refs.form.validate((valid) => { //全局验证
-            console.log(valid);
+        this.$refs.form.validate((result) => { //全局验证
+
+           if(result){
+             register(this.form).then(res=>{
+
+               console.log('注册返回信息',res);
+                //这里不需要做成功判断了,api中已经封装好错误的处理,如果错误会被返回出去,不会执行这里的成功代码
+                //所以这里只要做成功的后续代码
+              this.$message.success('注册成功');
+              this.dialogFormVisible = false; //关闭对话框
+           
+             })
+           }
         })
     },
     //刷新图形码 拼接随机数
@@ -176,16 +187,37 @@ export default {
         if(_pass === false){
             return;
         }else{
+
+          //倒计时功能
+          this.totalTime--;
+          let timeID= setInterval(()=>{
+            this.totalTime--;
+            if(this.totalTime <= 0){
+              clearInterval(timeID);
+              this.totalTime = 60;
+            }
+          },1000);
+
             console.log(_pass);
             //发送请求 获取短信验证码
             getPhoneCode({code:this.form.code,phone:this.form.phone}).then(res=>{
             //成功回调
-            this.$message.success(res.data.data.captcha+'');
             console.log(res)
-    });
+            this.$message.success(res.data.captcha+'');
+            
+      });
         }
     }
-  }
+  },
+  watch: {
+    //监听是否关闭了对话框,只要是关闭的,就清空
+        dialogFormVisible(newVal){
+          if(newVal==false){
+            this.$refs.form.resetFields();
+            this.imageUrl='';
+          }
+        }
+  },
 };
 </script>
 
