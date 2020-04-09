@@ -9,25 +9,25 @@
       </div>
   <!-- 表单 -->
            <!-- 挂载到data  单个表单验证的规则   整个表单提交的验证-->
-  <el-form :model="form" :rules="rules" ref="ruleForm">
+  <el-form :model="form" :rules="rules" ref="form">
 
       <el-form-item prop="phone">
-          <el-input prefix-icon="el-icon-user" v-model="form.phone" plaseholder="请输入手机号"></el-input>
+          <el-input prefix-icon="el-icon-user" v-model="form.phone" placeholder="请输入手机号"></el-input>
       </el-form-item>
       <el-form-item prop="password">
-          <el-input :show-password="true" prefix-icon="el-icon-lock" v-model="form.password" plaseholder="请输入手机号"></el-input>
+          <el-input :show-password="true" prefix-icon="el-icon-lock" v-model="form.password" placeholder="请输入手机号"></el-input>
       </el-form-item>
       <el-form-item prop="code">
          <el-row>
            <el-col :span='16'>
-               <el-input prefix-icon="el-icon-key" v-model="form.code" plaseholder="请输入验证码"></el-input>
+               <el-input prefix-icon="el-icon-key" v-model="form.code" placeholder="请输入验证码"></el-input>
            </el-col>
-           <el-col :span='8'>
-                <img src="@/assets/img/key.jpg"  class="key">
+           <el-col :span="8" >
+                <img :src="codeUrl"  class="key" @click="changeCodeUrl">
            </el-col>
          </el-row>
       </el-form-item>
-      <el-form-item>
+      <el-form-item prop="isCheck">
           <el-checkbox v-model="form.isCheck">
             我已阅读并同意
             <el-link type="primary">用户协议</el-link>和
@@ -53,12 +53,16 @@
 
 <script>
 import register from './register.vue' //导入注册弹窗
+import {toLogin} from '@/api/login.js' //导入api的axios方法
+import {saveToken} from '@/utils/token.js' //导入保存token方法
 export default {
   components:{
     register, //注册页面
   },
   data(){
     return {
+      baseUrl: process.env.VUE_APP_URL,
+      codeUrl:process.env.VUE_APP_URL+'/captcha?type=login', //图形码地址
       form:{
           phone:'',
           password:'',
@@ -66,7 +70,19 @@ export default {
           isCheck:'', //复选框空字符串会得到布尔值
       },
       rules:{
-        phone:[{required:true, message:'请输入手机号',trigger:'change'}],
+        phone:[
+          {required:true, message:'请输入手机号',trigger:'change'},
+          {   //validator 自定义校验
+                validator:(rule,value,callback)=>{
+                    let _reg = /^(0|86|17951)?(13[0-9]|15[012356789]|166|17[3678]|18[0-9]|14[57])[0-9]{8}$/;
+                    if(_reg.test(value)){
+                        callback();
+                    }else{
+                        callback('请正确输入手机号');
+                    }
+                }
+            }
+          ],
         password:[
           {required:true, message:'请输入密码',trigger:'change'},
           {min:6,max:12,message:'请输入6到12位的密码',trigger:'change'}
@@ -74,27 +90,46 @@ export default {
         code:[
           {required:true, message:'请输入验证码',trigger:'change'},
           {min:4,max:4,message:'请输入正确的验证码',trigger:'change'}
+        ],
+        isCheck:[
+          {required:true, message:'请勾选协议',trigger:'change'},
+          {   //validator 自定义校验
+                validator:(rule,value,callback)=>{
+                   
+                  if(value===true){
+                    callback();
+                  }else{
+                    callback('请勾选协议')
+                  }
+                },trigger:'change'
+            }
         ]
     }
     }
   },
   methods: {
-    //登录点击
+    //登录点击  进行全局校验
     clicklogin(){
         //提交表单验证  返回值(布尔值),符合规则就是true
         //这里的$refs和上面定义的ref的值要一致
-        this.$refs.ruleForm.validate((valid) => {
-          if (valid) {
-            this.$message.success('恭喜你,登录成功!')
-          } else {
-            this.$message.warning('输入错误,请重新输入')
-          }
+        this.$refs.form.validate((valid) => {
+          if (valid==true) {  //验证通过
+            //发送登录请求
+            toLogin(this.form).then(res=>{
+              this.$message.success('恭喜你,登录成功!');
+              console.log('登录信息',res);
+              saveToken(res.data.token);
+            })
+          } 
         });
-        // alert(process.env.VUE_APP_zz);测试环境变量
     },
     //注册点击
     registerClick(){
         this.$refs.register.dialogFormVisible=true;
+    },
+    //点击刷新验证码
+    changeCodeUrl(){
+      this.codeUrl=process.env.VUE_APP_URL+'/captcha?type=login'+Date.now();
     }
   },
 };
