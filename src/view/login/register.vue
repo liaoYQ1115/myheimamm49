@@ -67,6 +67,7 @@
 
 <script>
 import {getPhoneCode,register} from '@/api/register.js'
+
 export default {
   data() {
     return {

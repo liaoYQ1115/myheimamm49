@@ -1,16 +1,19 @@
 import axios from 'axios'
 
 import { Message } from 'element-ui';//message单独引用
-
+import {getToken} from './token.js'
 //创建axios实例
 var instance = axios.create({
-    baseURL: 'http://127.0.0.1/heimamm/public', //设置基地址
+    baseURL:  process.env.VUE_APP_URL,   //设置基地址
     withCredentials: true, //跨域照样协带cookie
 });
 
 // 添加请求拦截器
 instance.interceptors.request.use(function (config) {
     // 在发送请求之前做些什么
+    if(getToken()){ //有token才有返回,不然是undefined
+        config.headers.token=getToken()
+    }
     return config;
 }, function (error) {
     // 对请求错误做些什么

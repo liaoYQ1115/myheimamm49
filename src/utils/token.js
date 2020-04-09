@@ -5,7 +5,7 @@ function saveToken(val,name='token'){
 
 //获取token 使用
 function getToken(name='token'){
-    window.localStorage.getItem(name)
+    return window.localStorage.getItem(name)
 }
 
 //删除token
