@@ -52,7 +52,7 @@
                    <el-input v-model="form.rcode"></el-input>
               </el-col>
               <el-col :span="7" :offset="1">
-                  <el-button @click="getRecode" :disabled="totalTime!=60">获取用户验证码<span :disabled="totalTime!=60">{{totalTime}}</span></el-button>
+                  <el-button @click="getRecode" :disabled="totalTime!=60">获取用户验证码<span v-if="totalTime!=60">{{totalTime}}</span></el-button>
               </el-col>
           </el-row>
       </el-form-item>

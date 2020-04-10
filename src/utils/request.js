@@ -1,7 +1,8 @@
 import axios from 'axios'
 
 import { Message } from 'element-ui';//message单独引用
-import {getToken} from './token.js'
+import { getToken,removeToken } from './token.js'
+import router from '@/router/router.js'
 //创建axios实例
 var instance = axios.create({
     baseURL:  process.env.VUE_APP_URL,   //设置基地址
@@ -26,7 +27,16 @@ instance.interceptors.response.use(function (response) {
     // return response;
     if(response.data.code==200){
         return response.data; //拿axios里面的data
-    }else{
+    } else if(response.data.code == 206){
+        //token出错处理
+        Message.error(response.data.message)
+        //跳至登录页
+        router.push('/')
+        // 清理掉token
+        removeToken()
+        //抛出错误,打断运行
+        return Promise.reject("error");
+}else{
         Message.error(response.data.message)
         return Promise.reject('error');
     }

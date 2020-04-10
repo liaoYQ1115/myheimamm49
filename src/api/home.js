@@ -8,4 +8,10 @@ function getUserInfo(params){ //登录请求
     })
 }
 
-export {getUserInfo}
+function exitLogin(){ //退出接口
+    return instance({
+        url:process.env.VUE_APP_URL+'/logout',
+        method:'get',
+    })
+}
+export {getUserInfo,exitLogin}

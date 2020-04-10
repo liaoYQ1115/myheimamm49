@@ -15,7 +15,7 @@
           <el-input prefix-icon="el-icon-user" v-model="form.phone" placeholder="请输入手机号"></el-input>
       </el-form-item>
       <el-form-item prop="password">
-          <el-input :show-password="true" prefix-icon="el-icon-lock" v-model="form.password" placeholder="请输入手机号"></el-input>
+          <el-input :show-password="true" prefix-icon="el-icon-lock" v-model="form.password" placeholder="请输入密码"></el-input>
       </el-form-item>
       <el-form-item prop="code">
          <el-row>
@@ -54,7 +54,7 @@
 <script>
 import register from './register.vue' //导入注册弹窗
 import {toLogin} from '@/api/login.js' //导入api的axios方法
-import {saveToken} from '@/utils/token.js' //导入保存token方法
+import {getToken,saveToken} from '@/utils/token.js' //导入保存token方法
 export default {
   components:{
     register, //注册页面
@@ -119,6 +119,7 @@ export default {
               this.$message.success('恭喜你,登录成功!');
               console.log('登录信息',res);
               saveToken(res.data.token);
+              this.$router.push('/home');
             })
           } 
         });
@@ -130,6 +131,12 @@ export default {
     //点击刷新验证码
     changeCodeUrl(){
       this.codeUrl=process.env.VUE_APP_URL+'/captcha?type=login'+Date.now();
+    }
+  },
+  created() {
+    //判断是否已登录 已登录跳转首页
+    if(getToken()){
+      this.$router.push('/home');
     }
   },
 };
