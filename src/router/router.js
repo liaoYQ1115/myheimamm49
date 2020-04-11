@@ -17,7 +17,10 @@ let router = new VueRouter({
     routes:[
         {
             path:'/',
-            component:login
+            component:login,
+            meta:{
+                title:'登录',
+            },
         },
         {
             path:'/home',
@@ -27,22 +30,37 @@ let router = new VueRouter({
                 {
                     path:'chart',
                     component:chart,
+                    meta:{
+                        title:'数据概览',
+                    },
                 },
                 {
                     path:'userList',
                     component:userList,
+                    meta:{
+                        title:'用户列表',
+                    },
                 },
                 {
                     path:'question',
                     component:question,
+                    meta:{
+                        title:'题库列表',
+                    },
                 },
                 {
                     path:'business',
                     component:business,
+                    meta:{
+                        title:'企业列表',
+                    },
                 },
                 {
                     path:'subject',
                     component:subject,
+                    meta:{
+                        title:'学科列表',
+                    },
                 },
             ]
         }
@@ -67,8 +85,10 @@ router.beforeEach((to, from, next) => {
     next()
       
  })
- router.afterEach(() => {
-    Nprogress.done()
+ router.afterEach((to) => {
+    Nprogress.done() //进度条
+    document.title=to.meta.title //to就相当于当前的$route
+
 })
   //如果next直接写死跳某地址如next("/")而没有next()它会形成了一个死循环，如从/到/它又走到了beforeEach里，又开始执行beforeEach,到了beforeEach又是从/到/形成死微循环,只有next()它就不会再跑到beforeEach里面来
 
