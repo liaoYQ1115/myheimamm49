@@ -203,7 +203,7 @@ export default {
             //发送请求 获取短信验证码
             getPhoneCode({code:this.form.code,phone:this.form.phone}).then(res=>{
             //成功回调
-            console.log(res)
+            console.log('验证码回调'+res)
             this.$message.success(res.data.captcha+'');
             
       });
