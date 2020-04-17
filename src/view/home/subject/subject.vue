@@ -21,7 +21,7 @@
         <el-form-item>
           <el-button type="primary" @click="search">搜索</el-button>
           <el-button type="primary" @click="reset">清除</el-button>
-          <el-button type="primary" @click="add">+新增学科</el-button>
+          <el-button type="primary" @click="add" v-if="$store.state.role.includes('管理员')">+新增学科</el-button>
         </el-form-item>
       </el-form>
     </el-card>
@@ -45,7 +45,7 @@
           <template slot-scope="scope">
            <el-button @click="edit(scope.row)">编辑</el-button>
           <el-button @click="setStatus(scope.row.id)">{{scope.row.status==1 ? '禁用':'启用'}}</el-button>
-          <el-button @click="del(scope.row.id)">删除</el-button>
+          <el-button @click="del(scope.row.id)" v-if="$store.state.role!='学生'">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -166,7 +166,7 @@ export default {
         }
 
         getSubjectData(_params).then(res=>{
-          console.log(res);
+          // console.log(res);
           this.tableData=res.data.items; //列表数据保存
           this.pagination.total = res.data.pagination.total; //响应的总页数赋值给分页数据总页数
         })

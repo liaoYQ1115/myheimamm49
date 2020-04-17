@@ -20,6 +20,7 @@ let router = new VueRouter({
             component:login,
             meta:{
                 title:'登录',
+                rules:['超级管理员','管理员','老师','学生'],
             },
         },
         {
@@ -32,6 +33,8 @@ let router = new VueRouter({
                     component:chart,
                     meta:{
                         title:'数据概览',
+                        rules:['超级管理员','管理员','老师'],
+                        icon:'el-icon-pie-chart',
                     },
                 },
                 {
@@ -39,6 +42,8 @@ let router = new VueRouter({
                     component:userList,
                     meta:{
                         title:'用户列表',
+                        rules:['超级管理员','管理员'],
+                        icon:'el-icon-user',
                     },
                 },
                 {
@@ -46,6 +51,8 @@ let router = new VueRouter({
                     component:question,
                     meta:{
                         title:'题库列表',
+                        rules:['超级管理员','管理员','老师'],
+                        icon:'el-icon-edit-outline',
                     },
                 },
                 {
@@ -53,6 +60,8 @@ let router = new VueRouter({
                     component:business,
                     meta:{
                         title:'企业列表',
+                        rules:['超级管理员','管理员','老师'],
+                        icon:'el-icon-office-building',
                     },
                 },
                 {
@@ -60,6 +69,8 @@ let router = new VueRouter({
                     component:subject,
                     meta:{
                         title:'学科列表',
+                        rules:['超级管理员','管理员','老师','学生'],
+                        icon:'el-icon-notebook-2',
                     },
                 },
             ]
@@ -70,19 +81,23 @@ let router = new VueRouter({
   //导入nprogress进度条插件
   import  Nprogress from 'nprogress'
   import 'nprogress/nprogress.css'
-
-//路由拦截尝试
+  import store from '@/store/index.js'
+  import { removeToken} from "@/utils/token.js";
+  import { Message } from 'element-ui';
+//路由拦截
 router.beforeEach((to, from, next) => {
-    //路由进入前处理
-    // console.log('去哪里',to);
-    // console.log('哪里来的',from);
-    //  if(to.fullPath=='/'){
-    //      next('/home/userList')
-    //  }else{
-    //      next()
-    //  }
-    Nprogress.start()
-    next()
+    
+    Nprogress.start();
+   
+    if (to.meta.rules.includes(store.state.role)) {
+        next()
+    }else {
+        // 弹出提示
+        Message.warning("您无权访问该页面！")
+        // 清除token
+        removeToken()
+        next("/")
+    }
       
  })
  router.afterEach((to) => {

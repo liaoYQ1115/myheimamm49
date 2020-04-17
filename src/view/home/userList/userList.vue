@@ -19,7 +19,7 @@
         <el-form-item>
           <el-button type="primary" @click="search">搜索</el-button>
           <el-button @click="reset">清除</el-button>
-          <el-button type="primary" @click="add">+新增用户</el-button>
+          <el-button type="primary" @click="add" >+新增用户</el-button>
         </el-form-item>
       </el-form>
     </el-card>
