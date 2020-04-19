@@ -1,6 +1,6 @@
 import {instance} from '@/utils/request.js'
 
-function getBusinessDate(params){ //退出接口
+function getBusinessDate(params){ //企业列表
     return instance({
         url:'/enterprise/list',
         method:'get',

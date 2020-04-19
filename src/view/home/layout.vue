@@ -71,7 +71,7 @@ export default {
     }
     //请求用户信息
     getUserInfo().then(res => {
-      console.log("用户信息", res);
+      // console.log("用户信息", res);
       this.userInfo = res.data;
       this.userInfo.avatar =
         process.env.VUE_APP_URL + "/" + this.userInfo.avatar;
@@ -85,8 +85,8 @@ export default {
         this.$router.push("/");
       } else {
         //角色权限处理,避免游客通过连接直接访问
-        console.log("路由配置", this.$route);
-        console.log("路由信息", this.$router);
+        // console.log("路由配置", this.$route);
+        // console.log("路由信息", this.$router);
         if (!this.$route.meta.rules.includes(res.data.role)) {
           this.$message("您无权访问该页面");
           removeToken();
